@@ -1,0 +1,90 @@
+@font-face {
+  font-family: 'Raleway';
+  src: url('./Raleway/Raleway-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 999;
+
+  font-stretch: 75% 125%;
+  font-style: normal;
+}
+
+$margin--small: 16px;
+$margin--normal: 3%;
+$fs--normal: 16px;
+$fs--big: 30px;
+
+html, body {
+  font-family: Raleway, sans-serif;
+}
+
+.App {
+  display: grid;
+  grid-gap: 20px;
+  place-items: center;
+  margin: {
+    left: $margin--small;
+    right: $margin--small;
+  }
+}
+
+h1 {
+  font-size: 20px;
+  letter-spacing: 0.7px;
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+
+  img {
+    width: 100%;
+  }
+
+  &__categories {
+    display: flex;
+  }
+
+  &__information {
+    display: flex;
+    justify-content: space-between;
+    margin-top: auto;
+  }
+}
+
+.item__categories {
+  p {
+    background-color: cornflowerblue;
+    border-radius: 20px;
+    padding: {
+      left: 10px;
+      right: 10px;
+      top: 7px;
+      bottom: 7px;
+    }
+    box-shadow: 2px 2px 8px #888888;
+  }
+
+  p + p {
+    margin-left: 10px;
+  }
+}
+
+.item__information {
+  h3 {
+    font-weight: normal;
+    font-size: 16px;
+    width: auto;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .App {
+    grid-template-columns: repeat(auto-fit, minmax(30%, 1fr));
+
+    margin: {
+      left: $margin--normal;
+      right: $margin--normal;
+    };
+  }
+}
