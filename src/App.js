@@ -2,6 +2,9 @@ import React, {useEffect, useState} from 'react';
 import './App.scss';
 import Select from "react-dropdown-select";
 import Mercury from "@postlight/mercury-parser";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
+
 
 let Parser = require("rss-parser");
 let parser = new Parser({
@@ -23,7 +26,7 @@ async function parseRSS(url) {
 
 const SmallArticle = ({ title, contentSnippet, pubDate, author, link, handleClick }) => {
     const date = new Date(pubDate);
-    const shortDate = `${date.getDate()}\\${date.getMonth() + 1}\\${date.getYear()}`;
+    const shortDate = `${date.getDate()}\\${date.getMonth() + 1}\\${date.getFullYear()}`;
 
     return (
         <section className={'item'} id={link} onClick={handleClick}>
@@ -45,11 +48,11 @@ const SmallArticleWithImage = ({ image, title, pubDate, author, categories, link
 
     return (
         <section className={'item'} id={link} onClick={handleClick}>
-            <div style={{ position: "relative"}}>
-            <section className={'item__categories'} style={{ position: "absolute", left: 0, top:0}}>
-                {categories ? categories.map((category, i) => <p key={i}>{category._}</p>) : null}
-            </section>
-            <img src={image} />
+            <div className={'item__div'}>
+                <section className={'item__categories'} style={{ position: "absolute", left: 0, top:0}}>
+                    {categories ? categories.map((category, i) => <p key={i}>{category._}</p>) : null}
+                </section>
+                <img src={image} alt={""} />
             </div>
             <h1>{title}</h1>
             <div className={'item__information'}>
@@ -69,13 +72,15 @@ function App() {
         .then(result => {
             // Sort the posts by date
             result.sort(function(a, b) {
-                var keyA = new Date(a.isoDate),
+                const keyA = new Date(a.isoDate),
                     keyB = new Date(b.isoDate);
                 // Compare the 2 dates
                 if (keyA < keyB) return 1;
                 if (keyA > keyB) return -1;
                 return 0;
             });
+
+            setItems(result);
 
             // Collect the categories
             let categoriesSet = new Set();
@@ -89,7 +94,6 @@ function App() {
             categoriesSet.forEach((category, id) => categories.push({id: id, name: category}));
             console.log(categories);
             console.log(result);
-            setItems(result);
             //console.log(categories);
         })
         .catch(e => console.error(e));
@@ -100,16 +104,24 @@ function App() {
   }
 
   const handleClick = (e) => {
-      console.log(e.currentTarget.id);
       const link = e.currentTarget.id;
       Mercury.parse(CORS_PROXY + link)
           .then(result => {
               console.log(result);
 
               // author, title, content, date_published, lead_image_url, word_count
-              const overlay = document.querySelector('.article__overlay');
-              overlay.innerHTML = result.content;
+              const overlayArticle = document.querySelector('.overlay__article');
+              overlayArticle.innerHTML = result.content;
+
+              // Show the overlay
+              const overlay = document.querySelector('.overlay');
+              overlay.style.display = "block";
           });
+  }
+
+  const closeArticle = () => {
+      const overlay = document.querySelector('.overlay');
+      overlay.style.display = "none";
   }
 
   //const divs = items.map((item, i) => {return <Article key={i} author={item.author} title={item.title} />});
@@ -128,7 +140,12 @@ function App() {
                 />
             }
         })}
-        <section className={'article__overlay'}/>
+        <div className={'overlay'}>
+            <div className={'button--close'} onClick={closeArticle}>
+                <FontAwesomeIcon icon={faTimes} />
+            </div>
+            <section className={'overlay__article'} />
+        </div>
     </div>
   );
 }
