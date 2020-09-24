@@ -77,11 +77,15 @@ function App() {
         for (let i = 0; i < urls.length; i++) {
             parseRSS(urls[i])
                 .then(data => {
-                    setItems(oldItems => [...oldItems, ...data.result]);
-                    setFilteredItems(oldItems => [...oldItems, ...data.result]);
-                    setCategories(oldCategories => [...oldCategories, ...data.categories]);
+                    if (data !== undefined) {
+                        setItems(oldItems => [...oldItems, ...data.result]);
+                        setFilteredItems(oldItems => [...oldItems, ...data.result]);
+                        setCategories(oldCategories => [...oldCategories, ...data.categories]);
+                    }
                 })
-                .catch(e => console.error(e));
+                .catch(e => {
+                    console.error(e);
+                });
         }
     }, [rssUrls]);
 
