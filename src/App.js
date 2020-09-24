@@ -18,10 +18,11 @@ let parser = new Parser({
     }
 });
 
+const CORS_PROXY = "https://cors-anywhere.herokuapp.com/"
 const baseUrl = "https://flipboard.com/@raimoseero/feed-nii8kd0sz.rss";
 
 function parseRSS(url) {
-    return parser.parseURL(url)
+    return parser.parseURL(CORS_PROXY + url)
         .then(feed => feed.items)
         .then(result => {
             // Sort the posts by date
@@ -109,7 +110,11 @@ function App() {
 
     const handleClick = (e) => {
         const link = e.currentTarget.id;
-        Mercury.parse(link)
+        Mercury.parse(CORS_PROXY + link, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
             .then(result => {
                 // author, title, content, date_published, lead_image_url, word_count
                 const overlayArticle = document.querySelector('.overlay__article');
